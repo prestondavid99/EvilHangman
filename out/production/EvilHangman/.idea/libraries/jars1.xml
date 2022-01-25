@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="jars1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/HangmanTestDriver/jars/apiguardian-api-1.0.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/HangmanTestDriver/jars/opentest4j-1.1.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

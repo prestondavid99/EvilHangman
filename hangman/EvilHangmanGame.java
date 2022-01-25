@@ -6,6 +6,8 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.SortedSet;
 
+
+
 public class EvilHangmanGame implements IEvilHangmanGame {
     @Override
     public void startGame(File dictionary, int wordLength) throws IOException, EmptyDictionaryException {

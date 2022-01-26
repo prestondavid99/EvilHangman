@@ -28,7 +28,7 @@ public class EvilHangmanGame implements IEvilHangmanGame {
     @Override
     public Set<String> makeGuess(char guess) throws GuessAlreadyMadeException {
         Map<String, Set<String>> setMap = new HashMap<>();
-
+        String newKey = null;
         sortedSet.add(guess);
 
         for (String s : wordSet) {
@@ -37,15 +37,33 @@ public class EvilHangmanGame implements IEvilHangmanGame {
             if (setMap.get(key) == null) {
                 subset.add(s);
                 setMap.put(key, subset);
-            }
-            else {
+            } else {
                 subset = setMap.get(key);
                 subset.add(s);
             }
-
-
         }
-        return null;
+        int count = 0;
+        for (Set<String> entry : setMap.values()) {
+            if (entry.size() > count) {
+                count = entry.size();
+            }
+        }
+        Set<String> potentialKeys = new HashSet<>();
+        for (Map.Entry<String, Set<String>> entry : setMap.entrySet()) {
+            if (entry.getValue().size() == count) {
+                newKey = entry.getKey();
+                potentialKeys.add(newKey);
+            }
+        }
+
+        for (String s : potentialKeys) {
+            if (s.indexOf(guess) == -1) {
+                newKey = s;
+            }
+            Map<String, Integer> countValues = new HashMap<>();
+        }
+        wordSet = setMap.get(newKey);
+        return setMap.get(newKey);
     }
 
     @Override

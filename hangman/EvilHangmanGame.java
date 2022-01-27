@@ -10,11 +10,23 @@ public class EvilHangmanGame implements IEvilHangmanGame {
     private SortedSet<Character> sortedSet = new TreeSet<>();
     private Set<String> wordSet = new HashSet<>();
     private int wordLength;
+    private StringBuilder currWord;
+
+
+
+
+    private boolean correctGuess = false;
+
 
     @Override
     public void startGame(File dictionary, int wordLength) throws IOException, EmptyDictionaryException {
         Set<String> words = new HashSet<>();
         this.wordLength = wordLength;
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < wordLength; i++) {
+            sb.append('-');
+        }
+        currWord = sb;
 
         try (var scanner = new Scanner(dictionary)) {
             while (scanner.hasNext()) {
@@ -31,11 +43,22 @@ public class EvilHangmanGame implements IEvilHangmanGame {
 
     }
 
+    public boolean isCorrectGuess() {
+        return correctGuess;
+    }
+
     @Override
     public Set<String> makeGuess(char guess) throws GuessAlreadyMadeException {
+        correctGuess = false;
         Map<String, Set<String>> setMap = new HashMap<>();
         String newKey = null;
         guess = Character.toLowerCase(guess);
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < wordLength; i++) {
+            sb.append('-');
+        }
+
+
         if (sortedSet.contains(guess)) {
             throw new GuessAlreadyMadeException();
         }
@@ -73,6 +96,14 @@ public class EvilHangmanGame implements IEvilHangmanGame {
         for (String s : potentialKeys.keySet()) {
             if (s.indexOf(guess) == -1) { // If the character is not found in the key
                 newKey = s;
+                if (newKey.equals(sb.toString())) {
+                    System.out.println("Sorry! There are no " + guess + "'s");
+                }
+                for (int i = 0; i < newKey.length(); i++) {
+                    if (newKey.charAt(i) != '-') {
+                        currWord.setCharAt(i, newKey.charAt(i));
+                    }
+                }
                 wordSet = setMap.get(newKey);
                 return setMap.get(newKey);
             }
@@ -95,7 +126,7 @@ public class EvilHangmanGame implements IEvilHangmanGame {
             }
         }
 
-        int potentialKeyCount = 0;
+        int potentialKeyCount = 0; // If there are letters at all
         for (String s : potentialKeys.keySet()) {
             if (potentialKeys.get(s) == minLetterCount) {
                 potentialKeyCount++;
@@ -106,6 +137,20 @@ public class EvilHangmanGame implements IEvilHangmanGame {
             for (String s : potentialKeys.keySet()) {
                 if (potentialKeys.get(s) == minLetterCount) {
                     newKey = s;
+                    if (newKey.equals(sb.toString())) {
+                        System.out.println("Sorry! There are no " + guess + "'s");
+                    }
+                    else {
+                        System.out.println("Nice! There is " + minLetterCount + " " + guess);
+                        correctGuess = true;
+                    }
+
+                    for (int i = 0; i < newKey.length(); i++) {
+                        if (newKey.charAt(i) != '-') {
+                            currWord.setCharAt(i, newKey.charAt(i));
+                        }
+                    }
+
                     wordSet = setMap.get(newKey);
                     return setMap.get(newKey);
                 }
@@ -136,6 +181,23 @@ public class EvilHangmanGame implements IEvilHangmanGame {
                 newKey = s;
             }
         }
+
+        if (newKey.equals(sb.toString())) {
+            System.out.println("Sorry! There are no " + guess + "'s");
+        }
+        else {
+            System.out.println("Nice! There is " + minLetterCount + " " + guess);
+            correctGuess = true;
+        }
+
+
+
+        for (int i = 0; i < newKey.length(); i++) {
+            if (newKey.charAt(i) != '-') {
+                currWord.setCharAt(i, newKey.charAt(i));
+            }
+        }
+
         wordSet = setMap.get(newKey);
         return setMap.get(newKey);
     }
@@ -144,6 +206,19 @@ public class EvilHangmanGame implements IEvilHangmanGame {
     public SortedSet<Character> getGuessedLetters() {
         return sortedSet;
     }
+
+    public String getCorrectWord() {
+        for (String s : wordSet) {
+            return s;
+        }
+        return null;
+    }
+
+    public StringBuilder getCurrKey() {
+        return currWord;
+    }
+
+
 
     public String getSubsetKey(String s, char guess) {
         var sb = new StringBuilder();
